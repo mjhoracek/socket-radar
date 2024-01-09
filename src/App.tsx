@@ -1,12 +1,43 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { Button } from "@mantine/core";
+import { Button, Select } from "@mantine/core";
+import { closeAllModals, openModal } from "@mantine/modals";
 
 function App() {
-  console.log(window.ipcRenderer);
+  console.log(window.Main);
 
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [ports, setPorts] = useState([] as any[]);
+  const [selectedPort, setSelectedPort] = useState<string | null>(null);
+  console.log("ports", ports);
+
+  const activatePort = (port: string) => {
+    setSelectedPort(port);
+    if (window.Main) {
+      window.Main.sendMessage("activatePort", port);
+    }
+    closeAllModals();
+  };
+
+  const openModalPort = () => {
+    openModal({
+      title: "Select a port",
+      children: (
+        <Select
+          placeholder="Select a port"
+          onChange={(e: string) => activatePort(e)}
+          data={
+            ports
+              ? ports.map((port: any) => {
+                  return { label: port.friendlyName, value: port.path };
+                })
+              : []
+          }
+        />
+      ),
+    });
+  };
 
   useEffect(() => {
     if (window.Main) {
@@ -22,11 +53,34 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    window.Main.on("ports", (data: any) => {
+      setPorts(data);
+      openModal({
+        title: "Select a port",
+        children: (
+          <Select
+            placeholder="Select a port"
+            onChange={(e: string) => activatePort(e)}
+            data={
+              data
+                ? data.map((port: any) => {
+                    return { label: port.friendlyName, value: port.path };
+                  })
+                : []
+            }
+          />
+        ),
+      });
+    });
+  }, []);
+
   const reconnectPort = () => {
     if (window.Main) {
       window.Main.sendMessage("reconnect", "reconnect");
     }
   };
+
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-appBg relative">
       <div className="absolute top-5 right-10">
@@ -40,7 +94,12 @@ function App() {
           )}
         </div>
       </div>
-
+      <div className="absolute top-[80px] right-10">
+        <div className="flex flex-col text-xl text-zinc-50">
+          {selectedPort ? selectedPort : "No Port Selected"}
+          <Button onClick={openModalPort}>Change Port</Button>
+        </div>
+      </div>
       {data === `   . ` ? (
         <p
           className="text-veloColor"

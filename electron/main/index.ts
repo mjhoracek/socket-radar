@@ -8,14 +8,16 @@ import { update } from "./update";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-const height = 600;
-const width = 800;
-let port: any;
-let openPortStatus: string = "";
-
 const SERIAL_PORT = "COM3"; // Update with your COM port
 const BAUD_RATE = 9600; // Set to your device's baud rate
+
+process.env.DIST_ELECTRON = join(__dirname, "../");
+process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
+process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
+  ? join(process.env.DIST_ELECTRON, "../public")
+  : process.env.DIST;
+
+let openPortStatus: string = "";
 
 let window: BrowserWindow | null = null;
 
@@ -26,22 +28,6 @@ const serialPortSettings = {
   dataBits: 8,
   stopBits: 1,
 };
-
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.mjs    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
-process.env.DIST_ELECTRON = join(__dirname, "../");
-process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
-process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
-  ? join(process.env.DIST_ELECTRON, "../public")
-  : process.env.DIST;
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -59,11 +45,20 @@ if (!app.requestSingleInstanceLock()) {
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
-function openPort() {
-  console.log("openPort called");
-  if (!port) {
-    port = new SerialPort(serialPortSettings as any);
+let port: SerialPort | null = null;
+let parser: ReadlineParser | null = null;
+
+function openPort(path: string) {
+  if (port) {
+    port.close((err) => {
+      if (err) {
+        console.error("Error closing port:", err);
+      }
+    });
   }
+
+  port = new SerialPort({ ...serialPortSettings, path } as any);
+
   port.open(function (err: any) {
     if (err) {
       window?.webContents.send("error", err.message);
@@ -75,70 +70,96 @@ function openPort() {
       console.log("Port opened!");
     }
   });
-}
 
-SerialPort.list()
-  .then((ports) => {
-    console.log("Serial ports:", ports);
-  })
-  .catch((error) => {
-    console.error("Error listing serial ports:", error);
+  parser = port.pipe(new ReadlineParser({ delimiter: "\r" }));
+
+  parser.on("data", function (data: any) {
+    console.log("Data:", data);
+    window?.webContents.send("error", "Port Open");
+    // Send data to the renderer process
+    if (window) {
+      window.webContents.send("ping", data);
+    }
   });
-
-openPort();
+}
 
 ipcMain.on("reconnect", () => {
   console.log("reconnect called");
-  openPort();
+  getPorts();
 });
 
-const parser = port.pipe(new ReadlineParser({ delimiter: "\r" }));
+// ipcMain.on("getPorts", () => {
+//   console.log("getPorts called");
+//   SerialPort.list()
+//     .then((ports) => {
+//       console.log("Serial ports:", ports);
+//       window?.webContents.send("ports", ports);
+//     })
+//     .catch((error) => {
+//       console.error("Error listing serial ports:", error);
+//     });
+// });
 
-parser.on("data", function (data: any) {
-  console.log("Data:", data);
-  window?.webContents.send("error", "Port Open");
-  // Send data to the renderer process
-  if (window) {
-    window.webContents.send("ping", data);
-  }
-});
+// if (port) {
+//   const parser = port.pipe(new ReadlineParser({ delimiter: "\r" }));
+
+//   parser.on("data", function (data: any) {
+//     console.log("Data:", data);
+//     window?.webContents.send("error", "Port Open");
+//     // Send data to the renderer process
+//     if (window) {
+//       window.webContents.send("ping", data);
+//     }
+//   });
+// }
 
 // Error handling
-port.on("error", (err: any) => {
-  console.error(`Error: ${err.message}`);
-  window?.webContents.send("error", err.message);
-});
+// port.on("error", (err: any) => {
+//   console.error(`Error: ${err.message}`);
+//   window?.webContents.send("error", err.message);
+// });
 
 const retryInterval = 1000; // 1 second
 let shouldRetry = true;
 
-function retryOpenPort() {
-  if (shouldRetry === false) {
-    console.log("no need to retry::::::");
-    return;
-  }
+// function retryOpenPort() {
+//   if (shouldRetry === false) {
+//     console.log("no need to retry::::::");
+//     return;
+//   }
 
-  setTimeout(() => {
-    openPort();
-    console.log("openPortstatus?", openPortStatus);
-    if (openPortStatus === "alreadyOpen") {
-      shouldRetry = false;
-      return;
-    }
-    console.log(`Retrying to open port`);
-    retryOpenPort();
-  }, retryInterval);
-}
+//   setTimeout(() => {
+//     // openPort();
+//     console.log("openPortstatus?", openPortStatus);
+//     if (openPortStatus === "alreadyOpen") {
+//       shouldRetry = false;
+//       return;
+//     }
+//     console.log(`Retrying to open port`);
+//     retryOpenPort();
+//   }, retryInterval);
+// }
 
-port.on("close", function (err: any) {
-  console.log("Port closed.");
-  window?.webContents.send("error", "Port Closed");
-  if (err.disconnected === true) {
-    // win.webContents.send('ping', 'Gun Disconnected');
-    shouldRetry = true;
-    retryOpenPort();
-  }
-});
+// port.on("close", function (err: any) {
+//   console.log("Port closed.");
+//   window?.webContents.send("error", "Port Closed");
+//   if (err.disconnected === true) {
+//     // win.webContents.send('ping', 'Gun Disconnected');
+//     shouldRetry = true;
+//     retryOpenPort();
+//   }
+// });
+
+const getPorts = () => {
+  SerialPort.list()
+    .then((ports) => {
+      console.log("Serial ports:", ports);
+      window?.webContents.send("ports", ports);
+    })
+    .catch((error) => {
+      console.error("Error listing serial ports:", error);
+    });
+};
 
 // Here, you can also use other preload
 const preload = join(__dirname, "../preload/index.mjs");
@@ -175,6 +196,7 @@ async function createWindow() {
       "main-process-message",
       new Date().toLocaleString()
     );
+    getPorts();
   });
 
   // Make all links open with the browser, not with the application
@@ -230,5 +252,12 @@ ipcMain.handle("open-win", (_, arg) => {
 
 ipcMain.on("reconnect", (event: IpcMainEvent, message: any) => {
   console.log(message);
-  openPort();
+  // openPort();
 });
+
+ipcMain.on("activatePort", (event: IpcMainEvent, message: any) => {
+  console.log(message);
+  openPort(message);
+});
+
+app.on("ready", () => getPorts());
