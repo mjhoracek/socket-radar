@@ -57,21 +57,31 @@ function App() {
 
   useEffect(() => {
     window.Main.on("ports", (data: any) => {
+      console.log("ports found in select", data);
       setPorts(data);
       openModal({
+        closeOnClickOutside: true,
         title: "Select a port",
         children: (
-          <Select
-            placeholder="Select a port"
-            onChange={(e: string) => activatePort(e)}
-            data={
-              data
-                ? data.map((port: any) => {
-                    return { label: port.friendlyName, value: port.path };
-                  })
-                : []
-            }
-          />
+          <>
+            {data.length === 0 ? (
+              <p>
+                No ports found - try connecting your usb and click reconnect
+              </p>
+            ) : (
+              <Select
+                placeholder="Select a port"
+                onChange={(e: string) => activatePort(e)}
+                data={
+                  data
+                    ? data.map((port: any) => {
+                        return { label: port.friendlyName, value: port.path };
+                      })
+                    : []
+                }
+              />
+            )}
+          </>
         ),
       });
     });
@@ -87,7 +97,7 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-appBg relative">
-      <div className="absolute top-5 right-10">
+      {/* <div className="absolute top-5 right-10">
         <div className="text-xl text-zinc-50">
           {error === `   . ` ? (
             <p>{"---.-"}</p>
@@ -97,13 +107,67 @@ function App() {
             <p> {"working?"}</p>
           )}
         </div>
-      </div>
-      <div className="absolute top-[80px] right-10">
-        <div className="flex flex-col text-xl text-zinc-50">
-          {selectedPort ? selectedPort : "No Port Selected"}
-          <Button onClick={openModalPort}>Change Port</Button>
+      </div> */}
+      <div className="flex flex-col top-5 right-10 absolute">
+        {selectedPort ? (
+          <div className="flex justify-start ">
+            <p>{`Active port: ${selectedPort}`}</p>
+          </div>
+        ) : (
+          <div className="flex justify-start">
+            <p>No Port Selected</p>
+          </div>
+        )}
+        <div className="flex flex-row">
+          <Button
+            styles={{
+              root: {
+                backgroundColor: "#1E1E1E",
+                color: "#F5F5F5",
+
+                border: "1px solid #F5F5F5",
+
+                fontSize: "12px",
+                fontWeight: "bold",
+                lineHeight: "16px",
+                letterSpacing: "0.1em",
+                fontFamily: "segment, sans-serif",
+
+                "&:hover": {
+                  backgroundColor: "#ffb03a38",
+                },
+              },
+            }}
+            onClick={openModalPort}
+          >
+            Change Port
+          </Button>
+          <Button
+            styles={{
+              root: {
+                backgroundColor: "#1E1E1E",
+                color: "#F5F5F5",
+
+                border: "1px solid #F5F5F5",
+
+                fontSize: "12px",
+                fontWeight: "bold",
+                lineHeight: "16px",
+                letterSpacing: "0.1em",
+                fontFamily: "segment, sans-serif",
+
+                "&:hover": {
+                  backgroundColor: "#ffb03a38",
+                },
+              },
+            }}
+            onClick={reconnectPort}
+          >
+            Reconnect
+          </Button>
         </div>
       </div>
+
       {data === `   . ` ? (
         <p
           className="text-veloColor"
@@ -141,31 +205,7 @@ function App() {
         </p>
       )}
 
-      <div className="absolute bottom-5 right-10">
-        <Button
-          styles={{
-            root: {
-              backgroundColor: "#1E1E1E",
-              color: "#F5F5F5",
-
-              border: "1px solid #F5F5F5",
-
-              fontSize: "12px",
-              fontWeight: "bold",
-              lineHeight: "16px",
-              letterSpacing: "0.1em",
-              fontFamily: "segment, sans-serif",
-
-              "&:hover": {
-                backgroundColor: "#ffb03a38",
-              },
-            },
-          }}
-          onClick={reconnectPort}
-        >
-          Reconnect
-        </Button>
-      </div>
+      <div className="absolute bottom-5 right-10"></div>
     </div>
   );
 }
