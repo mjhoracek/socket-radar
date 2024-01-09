@@ -14,10 +14,10 @@ function App() {
 
   const activatePort = (port: string) => {
     setSelectedPort(port);
+    setData(null);
     if (window.Main) {
       window.Main.sendMessage("activatePort", port);
     }
-    setData(null);
     setError(null);
     closeAllModals();
   };
@@ -78,6 +78,8 @@ function App() {
   }, []);
 
   const reconnectPort = () => {
+    setData(null);
+    setError(null);
     if (window.Main) {
       window.Main.sendMessage("reconnect", "reconnect");
     }
