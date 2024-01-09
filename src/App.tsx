@@ -97,17 +97,6 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-appBg relative">
-      {/* <div className="absolute top-5 right-10">
-        <div className="text-xl text-zinc-50">
-          {error === `   . ` ? (
-            <p>{"---.-"}</p>
-          ) : error ? (
-            <p> {`${error}`}</p>
-          ) : (
-            <p> {"working?"}</p>
-          )}
-        </div>
-      </div> */}
       <div className="flex flex-col top-5 right-10 absolute">
         {selectedPort ? (
           <div className="flex justify-start ">

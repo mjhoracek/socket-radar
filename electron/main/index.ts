@@ -29,6 +29,9 @@ const serialPortSettings = {
   stopBits: 1,
 };
 
+const retryInterval = 1000; // 1 second
+let shouldRetry = true;
+
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
@@ -81,24 +84,45 @@ function openPort(path: string) {
       window.webContents.send("ping", data);
     }
   });
+
+  port?.on("error", (err: any) => {
+    console.error(`Error: ${err.message}`);
+    window?.webContents.send("error", err.message);
+  });
+
+  function retryOpenPort() {
+    if (shouldRetry === false) {
+      console.log("no need to retry::::::");
+      return;
+    }
+
+    setTimeout(() => {
+      // openPort();
+      console.log("openPortstatus?", openPortStatus);
+      if (openPortStatus === "alreadyOpen") {
+        shouldRetry = false;
+        return;
+      }
+      console.log(`Retrying to open port`);
+      retryOpenPort();
+    }, retryInterval);
+  }
+
+  port.on("close", function (err: any) {
+    console.log("Port closed.");
+    window?.webContents.send("error", "Port Closed");
+    if (err.disconnected === true) {
+      // win.webContents.send('ping', 'Gun Disconnected');
+      shouldRetry = true;
+      retryOpenPort();
+    }
+  });
 }
 
 ipcMain.on("reconnect", () => {
   console.log("reconnect called");
   getPorts();
 });
-
-// ipcMain.on("getPorts", () => {
-//   console.log("getPorts called");
-//   SerialPort.list()
-//     .then((ports) => {
-//       console.log("Serial ports:", ports);
-//       window?.webContents.send("ports", ports);
-//     })
-//     .catch((error) => {
-//       console.error("Error listing serial ports:", error);
-//     });
-// });
 
 // if (port) {
 //   const parser = port.pipe(new ReadlineParser({ delimiter: "\r" }));
@@ -112,15 +136,6 @@ ipcMain.on("reconnect", () => {
 //     }
 //   });
 // }
-
-// Error handling
-// port.on("error", (err: any) => {
-//   console.error(`Error: ${err.message}`);
-//   window?.webContents.send("error", err.message);
-// });
-
-const retryInterval = 1000; // 1 second
-let shouldRetry = true;
 
 // function retryOpenPort() {
 //   if (shouldRetry === false) {

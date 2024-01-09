@@ -1,9 +1,9 @@
 {
-  "name": "electron-vite-react",
-  "version": "2.2.0",
+  "name": "socket-radar",
+  "version": "1.0.0",
   "main": "dist-electron/main/index.js",
-  "description": "Electron Vite React boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "Connect Stalker Radar gun to Computer Displa",
+  "author": "Mitch Horacek <mitchhoracek.com>",
   "license": "MIT",
   "private": true,
   "debug": {
