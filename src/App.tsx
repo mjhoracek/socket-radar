@@ -17,6 +17,8 @@ function App() {
     if (window.Main) {
       window.Main.sendMessage("activatePort", port);
     }
+    setData(null);
+    setError(null);
     closeAllModals();
   };
 
