@@ -25,7 +25,7 @@ export const getUniqueDeviceId = () => {
   return readableId.toUpperCase(); // Optional: make it uppercase for better readability
 };
 
-export const webhookConnectSuccess = async () => {
+export const logUserConnect = async () => {
   const deviceId = getUniqueDeviceId();
   const message = {
     content: `${deviceId} connected`,

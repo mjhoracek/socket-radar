@@ -1,11 +1,11 @@
 import { app, BrowserWindow, shell, ipcMain, IpcMainEvent } from "electron";
-
 import { release } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { update } from "./update";
 import { getPorts, openPort } from "../functions/serialportSetup";
 import { setupReconnectListener } from "../functions/reconnectListener";
+import { logUserConnect } from "../functions/userConnectedWebhook";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,6 +28,8 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
   process.exit(0);
 }
+
+logUserConnect();
 
 // Here, you can also use other preload
 const preload = join(__dirname, "../preload/index.mjs");
