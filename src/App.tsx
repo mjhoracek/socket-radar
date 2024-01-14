@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { Button, Select } from "@mantine/core";
 import { closeAllModals, openModal } from "@mantine/modals";
+import UpdateElectron from "@/components/update";
 
 function App() {
   console.log(window.Main);
@@ -108,6 +109,7 @@ function App() {
           </div>
         )}
         <div className="flex flex-row">
+          <UpdateElectron />
           <Button
             styles={{
               root: {

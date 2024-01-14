@@ -17,7 +17,9 @@
     "build": "vite build && electron-builder",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
