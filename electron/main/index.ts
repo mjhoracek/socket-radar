@@ -3,7 +3,7 @@ import { release } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { update } from "./update";
-import { getPorts, openPort } from "../functions/serialportSetup";
+import { closePort, getPorts, openPort } from "../functions/serialportSetup";
 import { setupReconnectListener } from "../functions/reconnectListener";
 import { logUserConnect } from "../functions/userConnectedWebhook";
 
@@ -125,5 +125,11 @@ ipcMain.on("activatePort", (event: IpcMainEvent, path: any) => {
   console.log(path);
   openPort(path, window);
 });
+
+ipcMain.on("closePort", (event: IpcMainEvent, path: any) => {
+  closePort();
+});
+
+ipcMain.on("getPorts", () => getPorts(window));
 
 app.on("ready", () => getPorts(window));

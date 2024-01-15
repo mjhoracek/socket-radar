@@ -15,7 +15,11 @@ export default {
   },
   plugins: [],
   variants: {
-    extend: {},
+    extend: {
+      animation: {
+        pulse: "pulse 3.5s infinite",
+      },
+    },
     fontFamily: {
       sans: ["Inter", "ui-sans-serif", "system-ui"],
       segment: ["segment", "sans-serif"],

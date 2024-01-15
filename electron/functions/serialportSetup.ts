@@ -8,7 +8,6 @@ let parser: ReadlineParser | null = null;
 const SERIAL_PORT = "COM3"; // Update with your COM port
 const BAUD_RATE = 9600; // Set to your device's baud rate
 
-let window: BrowserWindow | null = null;
 let openPortStatus: string = "";
 const retryInterval = 1000; // 1 second
 let shouldRetry = true;
@@ -50,7 +49,7 @@ export function openPort(path: string, window: BrowserWindow | null) {
     console.log("Data:", data);
     if (window && !window.isDestroyed()) {
       //TODO: dont use the error channel here
-      window.webContents.send("error", "Port Open");
+      window.webContents.send("status", "Port Open");
       // Send data to the renderer process
       window.webContents.send("ping", data);
     }
@@ -81,8 +80,8 @@ export function openPort(path: string, window: BrowserWindow | null) {
 
   port.on("close", function (err: any) {
     console.log("Port closed.");
-    window?.webContents.send("error", "Port Closed");
-    if (err.disconnected === true) {
+    window?.webContents.send("status", "Port Closed");
+    if (err && err.disconnected === true) {
       // win.webContents.send('ping', 'Gun Disconnected');
       shouldRetry = true;
       retryOpenPort();
@@ -100,4 +99,15 @@ export const getPorts = (window: BrowserWindow | null) => {
     .catch((error) => {
       console.error("Error listing serial ports:", error);
     });
+};
+
+export const closePort = () => {
+  console.log("running closePort function");
+  if (port) {
+    port.close((err) => {
+      if (err) {
+        console.error("Error closing port:", err);
+      }
+    });
+  }
 };

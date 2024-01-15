@@ -2,7 +2,7 @@ import { Button as MantineButton } from "@mantine/core";
 
 interface ButtonProps {
   onClick: () => void;
-  label: string;
+  label: string | JSX.Element;
 }
 
 export const Button = ({ onClick, label }: ButtonProps) => {
@@ -23,6 +23,7 @@ export const Button = ({ onClick, label }: ButtonProps) => {
 
           "&:hover": {
             backgroundColor: "#ffb03a38",
+            border: "1px solid white",
           },
         },
       }}
