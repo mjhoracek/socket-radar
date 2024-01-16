@@ -6,8 +6,6 @@ import { Button } from "./components/shared/Button";
 import { SVG } from "./components/shared/SVG";
 
 function App() {
-  console.log(window.Main);
-
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(null);
@@ -151,30 +149,37 @@ function App() {
               {`${data}`}
             </p>
           ) : (
-            <p
-              style={{
-                fontFamily: "segment, sans serif",
-                fontWeight: "bold",
-                lineHeight: "80%",
-                fontSize: "10vw",
-              }}
-            >
-              {"No Data Flow"}
-            </p>
+            <div>
+              <p
+                style={{
+                  fontFamily: "segment, sans serif",
+                  fontWeight: "bold",
+                  lineHeight: "80%",
+                  fontSize: "10vw",
+                }}
+              >
+                {"No Data Flow"}
+              </p>
+              <p className="text-2xl">
+                Make sure your gun is in Transmit Mode (XMIT){" "}
+              </p>
+            </div>
           )}
         </>
       )}
       {!data && !selectedPort && (
-        <p
-          style={{
-            fontFamily: "segment, sans serif",
-            fontWeight: "bold",
-            lineHeight: "80%",
-            fontSize: "10vw",
-          }}
-        >
-          {"Not Connected"}
-        </p>
+        <div>
+          <p
+            style={{
+              fontFamily: "segment, sans serif",
+              fontWeight: "bold",
+              lineHeight: "80%",
+              fontSize: "10vw",
+            }}
+          >
+            {"Not Connected"}
+          </p>
+        </div>
       )}
 
       <div className="absolute bottom-5 right-10"></div>

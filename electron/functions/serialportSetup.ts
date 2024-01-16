@@ -21,14 +21,6 @@ const serialPortSettings = {
 };
 
 export function openPort(path: string, window: BrowserWindow | null) {
-  if (port) {
-    port.close((err) => {
-      if (err) {
-        console.error("Error closing port:", err);
-      }
-    });
-  }
-
   port = new SerialPort({ ...serialPortSettings, path } as any);
 
   port.open(function (err: any) {
@@ -91,7 +83,6 @@ export function openPort(path: string, window: BrowserWindow | null) {
 }
 
 export const getPorts = (window: BrowserWindow | null) => {
-  console.log("running get ports");
   SerialPort.list()
     .then((ports) => {
       console.log("Serial ports:", ports);
@@ -103,7 +94,6 @@ export const getPorts = (window: BrowserWindow | null) => {
 };
 
 export const closePort = () => {
-  console.log("running closePort function");
   if (port) {
     port.close((err) => {
       if (err) {
