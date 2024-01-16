@@ -124,31 +124,47 @@ function App() {
           </div>
         </div>
       </div>
-      {data === `   . ` ? (
-        <p
-          className="text-veloColor"
-          style={{
-            fontFamily: "segment, sans serif",
-            fontWeight: "bold",
-            lineHeight: "80%",
-            fontSize: "40vw",
-          }}
-        >
-          {"---.-"}
-        </p>
-      ) : data ? (
-        <p
-          className="text-veloColor"
-          style={{
-            fontFamily: "segment, sans serif",
-            fontWeight: "bold",
-            lineHeight: "80%",
-            fontSize: "40vw",
-          }}
-        >
-          {`${data}`}
-        </p>
-      ) : (
+      {selectedPort && (
+        <>
+          {data === `   . ` ? (
+            <p
+              className="text-veloColor"
+              style={{
+                fontFamily: "segment, sans serif",
+                fontWeight: "bold",
+                lineHeight: "80%",
+                fontSize: "40vw",
+              }}
+            >
+              {"---.-"}
+            </p>
+          ) : data ? (
+            <p
+              className="text-veloColor"
+              style={{
+                fontFamily: "segment, sans serif",
+                fontWeight: "bold",
+                lineHeight: "80%",
+                fontSize: "40vw",
+              }}
+            >
+              {`${data}`}
+            </p>
+          ) : (
+            <p
+              style={{
+                fontFamily: "segment, sans serif",
+                fontWeight: "bold",
+                lineHeight: "80%",
+                fontSize: "10vw",
+              }}
+            >
+              {"No Data Flow"}
+            </p>
+          )}
+        </>
+      )}
+      {!data && !selectedPort && (
         <p
           style={{
             fontFamily: "segment, sans serif",
