@@ -47,6 +47,7 @@ export function openPort(path: string, window: BrowserWindow | null) {
 
   parser.on("data", function (data: any) {
     console.log("Data:", data);
+    shouldRetry = false;
     if (window && !window.isDestroyed()) {
       //TODO: dont use the error channel here
       window.webContents.send("status", "Port Open");
@@ -82,7 +83,7 @@ export function openPort(path: string, window: BrowserWindow | null) {
     console.log("Port closed.");
     window?.webContents.send("status", "Port Closed");
     if (err && err.disconnected === true) {
-      // win.webContents.send('ping', 'Gun Disconnected');
+      window?.webContents.send("error", "Port Disconnected");
       shouldRetry = true;
       retryOpenPort();
     }
