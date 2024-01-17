@@ -7,7 +7,7 @@ import { SVG } from "./components/shared/SVG";
 
 function App() {
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState(null);
   const [ports, setPorts] = useState([] as any[]);
   const [selectedPort, setSelectedPort] = useState<string | null>(null);
@@ -26,6 +26,7 @@ function App() {
     window.Main.sendMessage("closePort", "closePort");
     setSelectedPort(null);
     setData(null);
+    setError(null);
     window.Main.sendMessage("getPorts", "getPorts");
     openModal({
       title: "Select a port",
@@ -48,14 +49,21 @@ function App() {
   useEffect(() => {
     if (window.Main) {
       window.Main.on("ping", (data: any) => {
+        setError(null);
         setData(data);
       });
 
       window.Main.on("error", (data: any) => {
+        if (data === "Data Flow Interrupted") {
+          setData(null);
+        }
         setError(data);
       });
 
       window.Main.on("status", (data: any) => {
+        if (data === "Port Closed") {
+          setData(null);
+        }
         setStatus(data);
       });
     }

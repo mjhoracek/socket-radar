@@ -40,8 +40,8 @@ export function openPort(path: string, window: BrowserWindow | null) {
   parser.on("data", function (data: any) {
     console.log("Data:", data);
     shouldRetry = false;
+
     if (window && !window.isDestroyed()) {
-      //TODO: dont use the error channel here
       window.webContents.send("status", "Port Open");
       // Send data to the renderer process
       window.webContents.send("ping", data);
