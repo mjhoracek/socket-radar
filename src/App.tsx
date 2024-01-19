@@ -4,8 +4,10 @@ import { Group, Select } from "@mantine/core";
 import { closeAllModals, openModal } from "@mantine/modals";
 import { Button } from "./components/shared/Button";
 import { SVG } from "./components/shared/SVG";
+import { UpdateButton } from "./components/update";
 
 function App() {
+  console.log(import.meta.env.VITE_TEST_VAR);
   const [data, setData] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState(null);
@@ -79,7 +81,7 @@ function App() {
           <>
             {data.length === 0 ? (
               <p>
-                No ports found - try connecting your usb and click reconnect
+                No ports found - try connecting your usb and click SELECT PORT
               </p>
             ) : (
               <Select
@@ -109,9 +111,10 @@ function App() {
               selectedPort ? (
                 <Group px={10}>
                   {data && status === "Port Open" ? (
-                    <div className="h-[10px] w-[10px] bg-green-600 rounded-full animate-pulse flex justify-center items-center">
-                      <div className="h-[5px] w-[5px] bg-green-600 rounded-full z-10"></div>
-                    </div>
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-600 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-green-600"></span>
+                    </span>
                   ) : (
                     <SVG.X size={20} color="red" />
                   )}
@@ -129,6 +132,9 @@ function App() {
             <p>{error}</p>
           </div>
         </div>
+      </div>
+      <div className="flex flex-row top-5 right-10 absolute ">
+        <UpdateButton />
       </div>
       {selectedPort && (
         <>

@@ -1,11 +1,14 @@
-import { Button as MantineButton } from "@mantine/core";
+import {
+  Button as MantineButton,
+  ButtonProps as MantineButtonProps,
+} from "@mantine/core";
 
-interface ButtonProps {
+interface ButtonProps extends MantineButtonProps {
   onClick: () => void;
   label: string | JSX.Element;
 }
 
-export const Button = ({ onClick, label }: ButtonProps) => {
+export const Button = ({ onClick, label, ...props }: ButtonProps) => {
   return (
     <MantineButton
       styles={{

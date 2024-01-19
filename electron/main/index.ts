@@ -7,6 +7,11 @@ import { closePort, getPorts, openPort } from "../functions/serialportSetup";
 import { setupReconnectListener } from "../functions/reconnectListener";
 import { logUserConnect } from "../functions/userConnectedWebhook";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+console.log(process.env.TEST_VAR);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
