@@ -4,7 +4,7 @@ import {
 } from "@mantine/core";
 
 interface ButtonProps extends MantineButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   label: string | JSX.Element;
 }
 

@@ -6,7 +6,6 @@ export const DevMain = () => {
   const [data, setData] = useState<number | null>(null);
 
   const spawnPitch = () => {
-    // Generate a random number between 69.0 and 110.0
     const randomNumber = parseFloat(
       (Math.floor(Math.random() * 1001) / 10).toFixed(1)
     );

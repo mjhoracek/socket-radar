@@ -5,7 +5,8 @@ import MainView from "./components/views/MainView";
 function App() {
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-appBg relative">
-      {import.meta.env.DEV ? <DevMain /> : <MainView />}
+      {/* {import.meta.env.DEV ? <DevMain /> : <MainView />} */}
+      <MainView />
     </div>
   );
 }
