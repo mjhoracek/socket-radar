@@ -1,10 +1,9 @@
 import type { ProgressInfo } from "electron-updater";
 import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/update/Modal";
-import Progress from "@/components/update/Progress";
-import "./update.css";
+
 import { Button } from "../shared/Button";
-import { openModal } from "@mantine/modals";
+import { Progress, Stack } from "@mantine/core";
 
 export const UpdateButton = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
@@ -22,48 +21,14 @@ export const UpdateButton = () => {
     onOk: () => window.ipcRenderer.invoke("start-download"),
   });
 
-  const openUpdateModal = () => {
-    openModal({
-      closeOnClickOutside: true,
-      title: "Update",
-      children: (
-        <div className="modal-slot" style={{ background: "green" }}>
-          {updateError ? (
-            <div>
-              <p>Error downloading the latest version.</p>
-              <p>{updateError.message}</p>
-            </div>
-          ) : updateAvailable ? (
-            <div>
-              <div>The last version is: v{versionInfo?.newVersion}</div>
-              <div className="new-version__target">
-                v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}
-              </div>
-              <div className="update__progress">
-                <div className="progress__title">Update progress:</div>
-                <div className="progress__bar">
-                  <Progress percent={progressInfo?.percent}></Progress>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="can-not-available">
-              {JSON.stringify(versionInfo ?? {}, null, 2)}
-            </div>
-          )}
-        </div>
-      ),
-    });
-  };
-
   const checkUpdate = async () => {
     /**
      * @type {import('electron-updater').UpdateCheckResult | null | { message: string, error: Error }}
      */
     const result = await window.ipcRenderer.invoke("check-update");
     setProgressInfo({ percent: 0 });
-    // setModalOpen(true);
-    openUpdateModal();
+    setModalOpen(true);
+    // openUpdateModal();
     if (result?.error) {
       setUpdateAvailable(false);
       setUpdateError(result?.error);
@@ -143,29 +108,32 @@ export const UpdateButton = () => {
         onOk={modalBtn?.onOk}
         footer={updateAvailable ? /* hide footer */ null : undefined}
       >
-        <div className="modal-slot" style={{ background: "green" }}>
+        <div>
           {updateError ? (
             <div>
               <p>Error downloading the latest version.</p>
               <p>{updateError.message}</p>
             </div>
           ) : updateAvailable ? (
-            <div>
-              <div>The last version is: v{versionInfo?.newVersion}</div>
-              <div className="new-version__target">
+            <Stack>
+              <div>The latest version is: v{versionInfo?.newVersion}</div>
+              <div>
                 v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}
               </div>
-              <div className="update__progress">
-                <div className="progress__title">Update progress:</div>
-                <div className="progress__bar">
-                  <Progress percent={progressInfo?.percent}></Progress>
+              <div>
+                <div>Update progress:</div>
+
+                <div className="py-5 bg-[#1a1a1a]">
+                  <Progress
+                    styles={{ root: { background: "black" } }}
+                    color="#ffb03a"
+                    value={progressInfo?.percent}
+                  />
                 </div>
               </div>
-            </div>
+            </Stack>
           ) : (
-            <div className="can-not-available">
-              {JSON.stringify(versionInfo ?? {}, null, 2)}
-            </div>
+            <div>{JSON.stringify(versionInfo ?? {}, null, 2)}</div>
           )}
         </div>
       </Modal>
