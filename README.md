@@ -2,7 +2,7 @@
 
 ## Connect your Stalker Radar gun to a computer display
 
-### Built with 🔥🔥🔥 by Mitch Horacek https://www.mitchhoracek.com/
+### Built by Mitch Horacek https://www.mitchhoracek.com/
 
 ## 👀 Overview
 
