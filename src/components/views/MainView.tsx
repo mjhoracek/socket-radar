@@ -166,6 +166,7 @@ const MainView = (props: Props) => {
           ) : (
             <div>
               <p
+                className="text-white"
                 style={{
                   fontFamily: "segment, sans serif",
                   fontWeight: "bold",
@@ -175,7 +176,7 @@ const MainView = (props: Props) => {
               >
                 {"No Data Flow"}
               </p>
-              <p className="text-2xl">
+              <p className="text-2xl text-white">
                 Make sure your gun is in Transmit Mode (XMIT){" "}
               </p>
             </div>
@@ -185,6 +186,7 @@ const MainView = (props: Props) => {
       {!data && !selectedPort && (
         <div>
           <p
+            className="text-white"
             style={{
               fontFamily: "segment, sans serif",
               fontWeight: "bold",
