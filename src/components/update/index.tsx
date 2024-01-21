@@ -21,6 +21,8 @@ export const UpdateButton = () => {
     onOk: () => window.ipcRenderer.invoke("start-download"),
   });
 
+  console.log(updateError);
+
   const checkUpdate = async () => {
     /**
      * @type {import('electron-updater').UpdateCheckResult | null | { message: string, error: Error }}
@@ -132,6 +134,8 @@ export const UpdateButton = () => {
                 </div>
               </div>
             </Stack>
+          ) : versionInfo?.update === versionInfo?.version ? (
+            <div>Your version is up to date</div>
           ) : (
             <div>{JSON.stringify(versionInfo ?? {}, null, 2)}</div>
           )}
