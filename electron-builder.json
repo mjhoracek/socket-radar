@@ -1,5 +1,5 @@
 {
-  "appId": "YourAppID",
+  "appId": "socket-radar",
   "asar": true,
   "directories": {
     "output": "release/${version}"
@@ -24,14 +24,9 @@
     "allowToChangeInstallationDirectory": true,
     "deleteAppDataOnUninstall": false
   },
-  "publish": [
-    {
-      "provider": "github",
-      "private": true,
-      "channel": "latest",
-      "owner": "mjhoracek",
-      "repo": "socket-radar",
-      "token": "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"
-    }
-  ]
+  "publish": {
+    "provider": "generic",
+    "channel": "latest",
+    "url": "https://github.com/mjhoracek/socket-radar/releases/download/v1.0.2/"
+  }
 }
