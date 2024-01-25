@@ -1,8 +1,8 @@
 {
   "name": "socket-radar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist-electron/main/index.js",
-  "description": "Connect Stalker Radar gun to Computer Displa",
+  "description": "Connect Stalker Radar gun to Computer Display",
   "author": "Mitch Horacek <mitchhoracek.com>",
   "license": "MIT",
   "private": true,
