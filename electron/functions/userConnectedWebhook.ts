@@ -9,6 +9,7 @@ export const getUniqueDeviceId = () => {
   const hostname = os.hostname();
   const cpuModel = os.cpus()[0].model;
   const arch = os.arch();
+  const platform = os.platform();
 
   // Concatenate the information to form a base string
   const baseString = `${hostname}-${cpuModel}-${arch}`;
@@ -21,8 +22,9 @@ export const getUniqueDeviceId = () => {
   // Convert the hash into a more human-readable format
   // For example, take the first 8 characters of the hash
   const readableId = fullHash.substring(0, 8);
+  const idWithPlatform = `${readableId}-${platform}`;
 
-  return readableId.toUpperCase(); // Optional: make it uppercase for better readability
+  return idWithPlatform.toUpperCase(); // Optional: make it uppercase for better readability
 };
 
 export const logUserConnect = async () => {

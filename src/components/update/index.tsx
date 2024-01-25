@@ -110,7 +110,7 @@ export const UpdateButton = () => {
         onOk={modalBtn?.onOk}
         footer={updateAvailable ? /* hide footer */ null : undefined}
       >
-        <div>
+        <div className="max-h-[70vh] overflow-y-scroll">
           {updateError ? (
             <div>
               <p>Error downloading the latest version.</p>
